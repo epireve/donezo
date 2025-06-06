@@ -69,7 +69,7 @@ export default function TodoAppPage() {
 
   useEffect(() => {
     setIsMounted(true);
-    const storedTodos = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const storedTodos = localStorage.getItem(TODOS_LOCAL_STORAGE_KEY);
     if (storedTodos) {
       setTodos(JSON.parse(storedTodos));
     }
@@ -77,7 +77,7 @@ export default function TodoAppPage() {
 
   useEffect(() => {
     if (isMounted) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
+      localStorage.setItem(TODOS_LOCAL_STORAGE_KEY, JSON.stringify(todos));
     }
   }, [todos, isMounted]);
 
