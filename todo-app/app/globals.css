@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+:root {
+  --background-light: #ffffff;
+  --foreground-light: #171717;
+  --background-dark: #0a0a0a;
+  --foreground-dark: #ededed;
+}
+
+@theme inline {
+  --color-background: var(--background-light);
+  --color-foreground: var(--foreground-light);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+.dark {
+  --color-background: var(--background-dark);
+  --color-foreground: var(--foreground-dark);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: Arial, Helvetica, sans-serif; /* Consider using a font from next/font for better performance and consistency */
+}
+
+/* Ensure inputs and buttons in dark mode have appropriate text colors if not handled by Tailwind dark variants */
+.dark input,
+.dark textarea,
+.dark select {
+  /* Tailwind's dark:text-white or similar should ideally handle this per component */
+  /* but this is a fallback if specific components don't have dark text color set */
+}
+
+.dark input::placeholder {
+  /* color: #a0aec0; */ /* Example dark placeholder color, adjust as needed */
+}
