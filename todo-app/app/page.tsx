@@ -66,6 +66,14 @@ export default function TodoAppPage() {
   const [isMounted, setIsMounted] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false); // State for Settings Modal
   const [aiActionLoading, setAiActionLoading] = useState<AiActionLoadingState>({});
+  const [expandedTodoIds, setExpandedTodoIds] = useState<Record<number, boolean>>({});
+
+  const toggleTodoDetails = (todoId: number) => {
+    setExpandedTodoIds(prev => ({
+      ...prev,
+      [todoId]: !prev[todoId] // Toggle: undefined -> true, true -> false, false -> true
+    }));
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -396,7 +404,28 @@ Respond with each sub-task on a new line. Do not use numbering or bullet points 
               </button>
             </div>
 
-            <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-4">
+            {/* Toggle Details Button */}
+            <div className="mt-2 mb-1 flex justify-end">
+              <button
+                onClick={() => toggleTodoDetails(todo.id)}
+                className="text-xs px-2.5 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-md transition-colors"
+              >
+                {expandedTodoIds[todo.id] ? 'Hide AI Details' : 'Show AI Details'}
+                {expandedTodoIds[todo.id] ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 inline-block ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 inline-block ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                )}
+              </button>
+            </div>
+            
+            {/* AI Details Section - Conditionally Rendered */}
+            {expandedTodoIds[todo.id] && (
+              <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-4">
               {/* Category Section */}
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center">
@@ -475,6 +504,7 @@ Respond with each sub-task on a new line. Do not use numbering or bullet points 
                 )}
               </div>
             </div>
+            )}
           </li>
         ))}
       </ul>
