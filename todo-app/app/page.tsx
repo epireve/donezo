@@ -8,6 +8,7 @@ import SettingsModal from './components/SettingsModal';
 const TODOS_LOCAL_STORAGE_KEY = 'nextjs-ai-todo-app-todos'; // Renamed for clarity
 const USER_PROFILE_KEY = 'ai-todo-user-profile';
 const API_CONFIG_KEY = 'ai-todo-api-config';
+const DELETED_TODOS_LOCAL_STORAGE_KEY = 'nextjs-ai-todo-app-deleted-todos';
 
 // --- Interfaces ---
 interface SubTask {
@@ -63,6 +64,8 @@ export default function TodoAppPage() {
   const { theme, toggleTheme } = useTheme();
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState<string>('');
+  const [deletedTodos, setDeletedTodos] = useState<Todo[]>([]); // New state for deleted todos
+  const [activeTab, setActiveTab] = useState<'active' | 'deleted' | 'completed'>('active'); // State for active tab
   const [isMounted, setIsMounted] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false); // State for Settings Modal
   const [aiActionLoading, setAiActionLoading] = useState<AiActionLoadingState>({});
@@ -81,6 +84,10 @@ export default function TodoAppPage() {
     if (storedTodos) {
       setTodos(JSON.parse(storedTodos));
     }
+    const storedDeletedTodos = localStorage.getItem(DELETED_TODOS_LOCAL_STORAGE_KEY);
+    if (storedDeletedTodos) {
+      setDeletedTodos(JSON.parse(storedDeletedTodos));
+    }
   }, []);
 
   useEffect(() => {
@@ -88,6 +95,12 @@ export default function TodoAppPage() {
       localStorage.setItem(TODOS_LOCAL_STORAGE_KEY, JSON.stringify(todos));
     }
   }, [todos, isMounted]);
+
+  useEffect(() => { // Save deleted todos to localStorage
+    if (isMounted) {
+      localStorage.setItem(DELETED_TODOS_LOCAL_STORAGE_KEY, JSON.stringify(deletedTodos));
+    }
+  }, [deletedTodos, isMounted]);
 
   const getApiConfig = (): ApiConfig | null => {
     if (typeof window === 'undefined') return null;
@@ -214,7 +227,26 @@ Please use this context to provide relevant and personalized assistance. Keep re
   };
 
   const deleteTodo = (id: number) => {
+    const todoToDelete = todos.find(todo => todo.id === id);
+    if (todoToDelete) {
+      setDeletedTodos(prevDeletedTodos => [...prevDeletedTodos, todoToDelete]);
+    }
     setTodos(todos.filter(todo => todo.id !== id));
+  };
+
+  const restoreTodo = (id: number) => {
+    const todoToRestore = deletedTodos.find(todo => todo.id === id);
+    if (todoToRestore) {
+      // Add to active todos (ensure it's not marked as completed if that's desired on restore)
+      // For now, restore with its current completed status.
+      setTodos(prevTodos => [...prevTodos, todoToRestore]);
+      // Remove from deleted todos
+      setDeletedTodos(prevDeletedTodos => prevDeletedTodos.filter(todo => todo.id !== id));
+    }
+  };
+
+  const permanentlyDeleteTodo = (id: number) => {
+    setDeletedTodos(prevDeletedTodos => prevDeletedTodos.filter(todo => todo.id !== id));
   };
 
   const handleSuggestCategory = async (todoId: number) => {
@@ -321,10 +353,30 @@ Respond with each sub-task on a new line. Do not use numbering or bullet points 
     );
   }
 
+  const tasksToDisplay =
+    activeTab === 'active'
+      ? todos.filter(t => !t.completed)
+      : activeTab === 'completed'
+      ? todos.filter(t => t.completed)
+      : deletedTodos;
+  const emptyListTitle =
+    activeTab === 'active'
+      ? 'No active tasks'
+      : activeTab === 'completed'
+      ? 'No completed tasks'
+      : 'No deleted tasks';
+  const emptyListMessage =
+    activeTab === 'active'
+      ? 'Add a new task to get started.'
+      : activeTab === 'completed'
+      ? 'Completed tasks will appear here.'
+      : 'Deleted tasks will appear here.';
+
   return (
     <div className="container mx-auto p-4 sm:p-6 md:p-8 max-w-2xl min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-300">
       <header className="flex justify-between items-center mb-6 sm:mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400">AI To-Do List</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400">Donezo</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Task management AI agent</p>
         <div className="flex items-center space-x-2"> {/* Group for buttons */}
           <button
             onClick={() => setIsSettingsModalOpen(true)}
@@ -365,19 +417,56 @@ Respond with each sub-task on a new line. Do not use numbering or bullet points 
           Add Task
         </button>
       </form>
+
+      {/* Tab Navigation */}
+      <div className="mb-6 flex justify-center space-x-2 border-b border-gray-200 dark:border-gray-700">
+        <button
+          onClick={() => setActiveTab('active')}
+          className={`py-2 px-4 font-medium text-sm rounded-t-md focus:outline-none transition-colors duration-150 ease-in-out ${
+            activeTab === 'active'
+              ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 dark:border-blue-500 bg-slate-50 dark:bg-slate-800'
+              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-slate-50 dark:hover:bg-slate-800/60'
+          }`}
+        >
+          Active Tasks
+        </button>
+        <button
+          onClick={() => setActiveTab('deleted')}
+          className={`py-2 px-4 font-medium text-sm rounded-t-md focus:outline-none transition-colors duration-150 ease-in-out ${
+            activeTab === 'deleted'
+              ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 dark:border-blue-500 bg-slate-50 dark:bg-slate-800'
+              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-slate-50 dark:hover:bg-slate-800/60'
+          }`}
+        >
+          Deleted Tasks
+        </button>
+        <button
+          onClick={() => setActiveTab('completed')}
+          className={`py-2 px-4 font-medium text-sm rounded-t-md focus:outline-none transition-colors duration-150 ease-in-out ${
+            activeTab === 'completed'
+              ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 dark:border-blue-500 bg-gray-100 dark:bg-gray-800'
+              : 'border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600'
+          }`}
+        >
+          Completed Tasks
+        </button>
+      </div>
       
-      {todos.length === 0 && (
+      
+      {/* Determine which tasks to display based on activeTab */}
+
+      {tasksToDisplay.length === 0 && (
         <div className="text-center text-gray-500 dark:text-gray-400 py-10">
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
           </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No tasks</h3>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by adding a new task.</p>
+          <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">{emptyListTitle}</h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{emptyListMessage}</p>
         </div>
       )}
 
       <ul className="space-y-4">
-        {todos.map(todo => (
+        {tasksToDisplay.map(todo => (
           <li
             key={todo.id}
             className={`p-4 rounded-lg shadow-lg transition-all duration-300 ease-in-out
@@ -390,20 +479,39 @@ Respond with each sub-task on a new line. Do not use numbering or bullet points 
                   type="checkbox"
                   checked={todo.completed}
                   onChange={() => toggleTodo(todo.id)}
-                  className="mr-3 mt-1 h-5 w-5 text-blue-600 dark:text-blue-500 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 cursor-pointer"
+                  className={`mr-3 mt-1 h-5 w-5 text-blue-600 dark:text-blue-500 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 ${activeTab === 'deleted' ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                  disabled={activeTab === 'deleted'}
                 />
                 <span className={`flex-grow text-base ${todo.completed ? 'line-through text-gray-500 dark:text-gray-400' : 'text-gray-800 dark:text-gray-200'}`}>
                   {todo.text}
                 </span>
               </div>
-              <button
-                onClick={() => deleteTodo(todo.id)}
-                className="ml-3 bg-red-500 hover:bg-red-600 text-white p-1.5 px-3 rounded-md text-xs font-medium transition-colors"
-              >
-                Delete
-              </button>
+              {activeTab === 'active' ? (
+                <button
+                  onClick={() => deleteTodo(todo.id)}
+                  className="ml-3 bg-red-500 hover:bg-red-600 text-white p-1.5 px-3 rounded-md text-xs font-medium transition-colors"
+                >
+                  Delete
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => restoreTodo(todo.id)}
+                    className="ml-3 bg-green-500 hover:bg-green-600 text-white p-1.5 px-3 rounded-md text-xs font-medium transition-colors"
+                  >
+                    Restore
+                  </button>
+                  <button
+                    onClick={() => permanentlyDeleteTodo(todo.id)}
+                    className="ml-2 bg-red-600 hover:bg-red-700 text-white p-1.5 px-3 rounded-md text-xs font-medium transition-colors"
+                  >
+                    Delete Permanently
+                  </button>
+                </>
+              )}
             </div>
 
+            {activeTab === 'active' && (<>
             {/* Toggle Details Button */}
             <div className="mt-2 mb-1 flex justify-end">
               <button
@@ -505,6 +613,7 @@ Respond with each sub-task on a new line. Do not use numbering or bullet points 
               </div>
             </div>
             )}
+            </>)} {/* Closing for activeTab === 'active' wrapper */}
           </li>
         ))}
       </ul>

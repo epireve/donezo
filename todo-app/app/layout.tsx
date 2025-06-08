@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({ // Keep existing font setup
 });
 
 export const metadata: Metadata = {
-  title: "AI To-Do App", // Updated title
+  title: "Donezo", // Updated title
   description: "A Next.js to-do application with AI features", // Updated description
 };
 
@@ -35,8 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning> {/* suppressHydrationWarning for theme persistence */}
-
+    <html lang="en" suppressHydrationWarning>{/* suppressHydrationWarning for theme persistence */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--color-background)] text-[var(--color-foreground)] transition-colors duration-300`}
       >

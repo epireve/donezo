@@ -1,0 +1,69 @@
+
+> todo-app@0.1.0 dev
+> next dev --turbopack -p 51976
+
+   ▲ Next.js 15.3.3 (Turbopack)
+   - Local:        http://localhost:51976
+   - Network:      http://172.17.0.6:51976
+
+ ✓ Starting...
+ ✓ Ready in 684ms
+ ○ Compiling / ...
+ ✓ Compiled / in 949ms
+ GET / 200 in 1092ms
+ ✓ Compiled /favicon.ico in 283ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 522ms
+ GET / 200 in 31ms
+ ✓ Compiled / in 12ms
+ GET / 200 in 110ms
+ GET / 200 in 113ms
+ GET /favicon.ico 200 in 226ms
+ GET / 200 in 35ms
+ GET / 200 in 37ms
+ GET /favicon.ico 200 in 218ms
+ GET / 200 in 43ms
+ GET /favicon.ico 200 in 228ms
+ ✓ Compiled / in 11ms
+ GET / 200 in 84ms
+ GET / 200 in 105ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 218ms
+ GET / 200 in 40ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 221ms
+ ✓ Compiled / in 11ms
+ GET / 200 in 91ms
+ GET / 200 in 102ms
+ GET /favicon.ico 200 in 217ms
+ ✓ Compiled / in 11ms
+ GET / 200 in 92ms
+ GET / 200 in 90ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 226ms
+ ✓ Compiled / in 11ms
+ GET / 200 in 94ms
+ GET / 200 in 96ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 223ms
+ GET / 200 in 46ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 220ms
+ GET / 200 in 45ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 218ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 119ms
+ GET / 200 in 99ms
+ GET / 200 in 128ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 228ms
+ GET / 200 in 49ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 110ms
+ GET / 200 in 72ms
+ GET / 200 in 41ms
+ ✓ Compiled in 109ms
+ ✓ Compiled in 121ms
+ ✓ Compiled in 111ms
+ ✓ Compiled in 126ms
+ ✓ Compiled in 109ms
+ ✓ Compiled in 111ms
+ ✓ Compiled / in 10ms
+ GET / 200 in 58ms
+ GET / 200 in 57ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 219ms
+ GET / 200 in 53ms

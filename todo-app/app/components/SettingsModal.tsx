@@ -31,8 +31,12 @@ const API_CONFIG_KEY = 'ai-todo-api-config';
 
 // --- Static Model Lists & URLs ---
 const GEMINI_MODELS: ModelOption[] = [
-  { id: 'gemini-1.5-flash-latest', name: 'Gemini 1.5 Flash (Latest)', provider: 'gemini' },
-  { id: 'gemini-1.5-pro-latest', name: 'Gemini 1.5 Pro (Latest)', provider: 'gemini' },
+  { id: 'gemini-2.5-flash-preview-05-20', name: 'Gemini 2.5 Flash Preview (05-20)', provider: 'gemini' },
+  { id: 'gemini-2.5-pro-preview-06-05', name: 'Gemini 2.5 Pro Preview (06-05)', provider: 'gemini' },
+  { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', provider: 'gemini' },
+  { id: 'gemini-2.0-flash-lite', name: 'Gemini 2.0 Flash Lite', provider: 'gemini' },
+  { id: 'gemini-1.5-flash-latest', name: 'Gemini 1.5 Flash', provider: 'gemini' },
+  { id: 'gemini-1.5-pro-latest', name: 'Gemini 1.5 Pro', provider: 'gemini' },
   { id: 'gemini-pro', name: 'Gemini Pro (Legacy)', provider: 'gemini' },
   // Add more Gemini models if needed, these are for the OpenAI-compatible endpoint
 ];
