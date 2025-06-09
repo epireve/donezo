@@ -375,8 +375,10 @@ Respond with each sub-task on a new line. Do not use numbering or bullet points 
   return (
     <div className="container mx-auto p-4 sm:p-6 md:p-8 max-w-2xl min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-300">
       <header className="flex justify-between items-center mb-6 sm:mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400">Donezo</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">Task management AI agent</p>
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400">Donezo</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Task management AI agent</p>
+        </div>
         <div className="flex items-center space-x-2"> {/* Group for buttons */}
           <button
             onClick={() => setIsSettingsModalOpen(true)}
@@ -408,7 +410,7 @@ Respond with each sub-task on a new line. Do not use numbering or bullet points 
           value={newTodo}
           onChange={e => setNewTodo(e.target.value)}
           placeholder="Add a new AI-powered to-do..."
-          className="flex-grow p-3 border border-gray-300 dark:border-gray-600 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
+          className="flex-grow p-3 border border-gray-300 dark:border-gray-600 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
         />
         <button
           type="submit"
@@ -470,7 +472,7 @@ Respond with each sub-task on a new line. Do not use numbering or bullet points 
           <li
             key={todo.id}
             className={`p-4 rounded-lg shadow-lg transition-all duration-300 ease-in-out
-                        ${todo.completed ? 'bg-green-100 dark:bg-green-900/30 opacity-75' : 'bg-white dark:bg-gray-800'}
+                        ${todo.completed ? 'bg-green-100 dark:bg-green-900/30 opacity-75' : 'bg-white'}
                         border border-gray-200 dark:border-gray-700`}
           >
             <div className="flex items-start justify-between mb-3">
